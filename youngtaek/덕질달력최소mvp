@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>덕력 - 문화생활 통합 스케줄 캘린더</title>
+    <style>
+      :root {
+        --bg-main: #fafafc;
+        --primary-purple-light: #ece6ff;
+        --primary-purple: #dcd0ff;
+        --primary-purple-dark: #7c3aed;
+        --purple-accent: #a78bfa;
+        --purple-card-bg: #f5f3ff;
+        --text-main: #1f2937;
+        --text-sub: #6b7280;
+        --border-color: #e5e7eb;
+
+        /* Category Colors */
+        --color-movie: #4f46e5;
+        --color-play: #7c3aed;
+        --color-musical: #c026d3;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        padding: 20px 10px;
+      }
+
+      .app-container {
+        width: 100%;
+        max-width: 480px;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.08);
+        overflow: hidden;
+        padding-bottom: 40px;
+        position: relative;
+      }
+
+      /* Header Navigation */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--primary-purple-dark);
+      }
+
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        background: var(--primary-purple-dark);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+      }
+
+      nav {
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+        color: var(--text-sub);
+        font-weight: 500;
+      }
+
+      .user-btn {
+        background: var(--primary-purple-dark);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* Banner Section */
+      .banner-card {
+        margin: 0 20px 20px 20px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-purple-light),
+          #f3f0ff
+        );
+        border-radius: 20px;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--primary-purple);
+      }
+
+      .banner-text .subtitle {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--primary-purple-dark);
+        margin-bottom: 4px;
+      }
+
+      .banner-text h2 {
+        font-size: 17px;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 6px;
+        color: #1e1b4b;
+      }
+
+      .banner-text p {
+        font-size: 11px;
+        color: var(--text-sub);
+      }
+
+      .duk-btn {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid var(--primary-purple-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--primary-purple-dark);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+      }
+
+      .duk-btn span {
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      /* Section Wrapper */
+      .section-card {
+        margin: 0 20px 24px 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 20px;
+        background: #ffffff;
+      }
+
+      .section-tag {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--purple-accent);
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #1e1b4b;
+      }
+
+      /* Calendar Header */
+      .cal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .cal-tabs {
+        display: flex;
+        background: var(--purple-card-bg);
+        padding: 3px;
+        border-radius: 12px;
+      }
+
+      .cal-tab {
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        background: transparent;
+        color: var(--text-sub);
+        cursor: pointer;
+      }
+
+      .cal-tab.active {
+        background: var(--primary-purple-dark);
+        color: white;
+        box-shadow: 0 2px 4px rgba(124, 58, 237, 0.2);
+      }
+
+      .cal-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .cal-nav button {
+        border: 1px solid var(--border-color);
+        background: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .month-title {
+        font-weight: 800;
+        font-size: 15px;
+        color: #1e1b4b;
+      }
+
+      /* Calendar Grid */
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .day-header {
+        font-size: 11px;
+        color: var(--text-sub);
+        padding-bottom: 8px;
+      }
+
+      .day-cell {
+        min-height: 58px;
+        border-top: 1px solid #f3f4f6;
+        padding: 4px 2px;
+        font-size: 11px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .day-cell:hover {
+        background: var(--purple-card-bg);
+      }
+
+      .day-cell.other-month {
+        color: #d1d5db;
+      }
+
+      .day-cell.today .num {
+        background: var(--primary-purple-dark);
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        line-height: 18px;
+      }
+
+      .event-tag {
+        font-size: 9px;
+        background: var(--primary-purple-light);
+        color: var(--primary-purple-dark);
+        border-radius: 4px;
+        padding: 2px 3px;
+        margin-top: 2px;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .event-tag.movie {
+        background: #eef2ff;
+        color: var(--color-movie);
+      }
+      .event-tag.play {
+        background: #f5f3ff;
+        color: var(--color-play);
+      }
+      .event-tag.musical {
+        background: #fdf4ff;
+        color: var(--color-musical);
+      }
+
+      /* Category Filter Section below Calendar */
+      .category-filter-area {
+        border-top: 1px dashed var(--border-color);
+        padding-top: 14px;
+      }
+
+      .main-category-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .cat-btn {
+        flex: 1;
+        padding: 8px 0;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-sub);
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .cat-btn.active {
+        background: var(--primary-purple-light);
+        color: var(--primary-purple-dark);
+        border-color: var(--primary-purple);
+      }
+
+      /* Genre Filter Bar (Rec Mode Only) */
+      .genre-category-bar {
+        display: none;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .genre-category-bar.active {
+        display: flex;
+      }
+
+      .sub-cat-chip {
+        background: #f3f4f6;
+        color: var(--text-sub);
+        border: none;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .sub-cat-chip.active {
+        background: var(--primary-purple-dark);
+        color: white;
+      }
+
+      /* Notifications Section Styles */
+      .noti-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+
+      .noti-item:last-child {
+        border-bottom: none;
+      }
+
+      .noti-badge {
+        background: var(--primary-purple-light);
+        color: var(--primary-purple-dark);
+        border-radius: 8px;
+        padding: 6px 10px;
+        text-align: center;
+        min-width: 45px;
+      }
+
+      .noti-badge .day {
+        font-weight: 800;
+        font-size: 14px;
+      }
+      .noti-badge .month {
+        font-size: 9px;
+      }
+
+      .noti-content h4 {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .noti-content p {
+        font-size: 11px;
+        color: var(--text-sub);
+        margin-top: 2px;
+      }
+
+      /* Trending Section Styles */
+      .trending-container {
+        margin: 0 20px;
+      }
+
+      .show-card {
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 12px;
+        background: var(--purple-card-bg);
+        border: 1px solid var(--primary-purple-light);
+      }
+
+      .show-type {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--primary-purple-dark);
+        background: white;
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+      }
+
+      .show-title {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+      .show-date {
+        font-size: 11px;
+        color: var(--text-sub);
+      }
+
+      /* Modal Layer */
+      .modal-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 100;
+        border-radius: 24px;
+        align-items: flex-end;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        width: 100%;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        padding: 24px;
+        max-height: 80%;
+        overflow-y: auto;
+        box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
+        animation: slideUp 0.2s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .modal-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #1e1b4b;
+      }
+
+      .close-btn {
+        border: none;
+        background: #f3f4f6;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .show-option-card {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #faf9ff;
+      }
+
+      .show-option-info h5 {
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .media-badge {
+        font-size: 9px;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--primary-purple);
+        color: var(--primary-purple-dark);
+      }
+
+      .show-option-info p {
+        font-size: 11px;
+        color: var(--text-sub);
+        margin-top: 3px;
+      }
+
+      .add-cal-btn {
+        background: var(--primary-purple-dark);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .add-cal-btn.added {
+        background: #e5e7eb;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header>
+        <div class="logo">
+          <div class="logo-icon">덕</div>
+          덕력
+        </div>
+        <nav>
+          <span>캘린더</span>
+          <span>스케줄</span>
+        </nav>
+        <button class="user-btn">김덕질</button>
+      </header>
+
+      <!-- Banner -->
+      <div class="banner-card">
+        <div class="banner-text">
+          <div class="subtitle">MY CULTURE LIFE</div>
+          <h2>놓치고 싶지 않은<br />문화생활 스케줄</h2>
+          <p>영화 · 연극 · 뮤지컬 카테고리별 맞춤 캘린더</p>
+        </div>
+        <div class="duk-btn" id="dukBtn" onclick="toggleDukMode()">
+          <span style="font-size: 16px">♥</span>
+          <span id="dukStatusText">덕질중</span>
+        </div>
+      </div>
+
+      <!-- Section 3: Calendar -->
+      <div class="section-card">
+        <div class="section-tag">SECTION 3</div>
+        <div class="cal-header">
+          <div class="cal-tabs">
+            <button class="cal-tab active" id="tabMy" onclick="switchTab('my')">
+              내 캘린더
+            </button>
+            <button class="cal-tab" id="tabRec" onclick="switchTab('rec')">
+              추천 일정
+            </button>
+          </div>
+          <div class="cal-nav">
+            <button onclick="prevMonth()">&lt;</button>
+            <span class="month-title" id="monthDisplay">2026년 7월</span>
+            <button onclick="nextMonth()">&gt;</button>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+        <!-- Category Filter Area below Calendar -->
+        <div class="category-filter-area">
+          <!-- 1st Category Bar (Movie / Play / Musical) -->
+          <div class="main-category-bar">
+            <button class="cat-btn active" onclick="setMainCategory('ALL')">
+              전체
+            </button>
+            <button class="cat-btn" onclick="setMainCategory('영화')">
+              🎬 영화
+            </button>
+            <button class="cat-btn" onclick="setMainCategory('연극')">
+              🎭 연극
+            </button>
+            <button class="cat-btn" onclick="setMainCategory('뮤지컬')">
+              🎵 뮤지컬
+            </button>
+          </div>
+
+          <!-- 2nd Genre Category Bar (Shown only in Rec Mode) -->
+          <div class="genre-category-bar" id="genreCategoryBar">
+            <button class="sub-cat-chip active" onclick="setSubGenre('ALL')">
+              전체 장르
+            </button>
+            <button class="sub-cat-chip" onclick="setSubGenre('공포/스릴러')">
+              😱 공포/스릴러
+            </button>
+            <button class="sub-cat-chip" onclick="setSubGenre('코미디')">
+              🤣 코미디
+            </button>
+            <button class="sub-cat-chip" onclick="setSubGenre('로맨스')">
+              💕 로맨스
+            </button>
+            <button class="sub-cat-chip" onclick="setSubGenre('드라마/판타지')">
+              ✨ 드라마/판타지
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Notifications (공연 & 영화 알림 복구) -->
+      <div class="section-card">
+        <div class="section-tag">SECTION 2</div>
+        <div class="section-title" style="margin-bottom: 12px">
+          공연 & 영화 알림 🎬
+        </div>
+
+        <div class="noti-item">
+          <div class="noti-badge">
+            <div class="day">25</div>
+            <div class="month">JUL</div>
+          </div>
+          <div class="noti-content">
+            <h4>뮤지컬 &lt;위키드&gt;</h4>
+            <p>오늘 오후 7:30 · 블루스퀘어</p>
+          </div>
+        </div>
+
+        <div class="noti-item">
+          <div class="noti-badge">
+            <div class="day">28</div>
+            <div class="month">JUL</div>
+          </div>
+          <div class="noti-content">
+            <h4>영화 &lt;인셉션 재개봉&gt;</h4>
+            <p>예매 오픈 D-1 · CGV 용산</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending Section (현재 인기작 복구) -->
+      <div class="trending-container">
+        <div class="section-tag">NOW TRENDING</div>
+        <div class="section-title" style="margin-bottom: 12px">현재 인기작</div>
+
+        <div class="show-card">
+          <span class="show-type">뮤지컬 · 판타지</span>
+          <div class="show-title">위키드</div>
+          <div class="show-date">2026. 07. 01 — 10. 31 | 블루스퀘어</div>
+        </div>
+
+        <div class="show-card">
+          <span class="show-type">영화 · 공포/스릴러</span>
+          <div class="show-title">파묘 2</div>
+          <div class="show-date">2026. 07. 20 대개봉 | 전국 극장</div>
+        </div>
+      </div>
+
+      <!-- Modal for Date Details -->
+      <div class="modal-overlay" id="dateModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title" id="modalDateTitle">7월 일정</div>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+          </div>
+          <div id="modalShowList"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let isDukActive = true;
+      let currentTab = "my";
+      let currentMonth = 6; // July (0-indexed)
+      let currentYear = 2026;
+      let selectedDate = null;
+
+      // Filters State
+      let selectedMainCategory = "ALL"; // ALL, 영화, 연극, 뮤지컬
+      let selectedSubGenre = "ALL"; // ALL, 공포/스릴러, 코미디, 로맨스, 드라마/판타지
+
+      // Master Show & Movie Database
+      const masterShows = [
+        {
+          id: 1,
+          type: "뮤지컬",
+          genre: "드라마/판타지",
+          title: "위키드",
+          venue: "블루스퀘어",
+          time: "19:30",
+          cast: "옥주현, 손승연",
+          recDate: 25,
+        },
+        {
+          id: 2,
+          type: "연극",
+          genre: "코미디",
+          title: "보이즈 인 더 밴드",
+          venue: "아트원씨어터",
+          time: "20:00",
+          cast: "이석준, 정원영",
+          recDate: 18,
+        },
+        {
+          id: 3,
+          type: "영화",
+          genre: "공포/스릴러",
+          title: "파묘 2",
+          venue: "CGV / 메가박스",
+          time: "14:20 / 19:10",
+          cast: "최민식, 김고은",
+          recDate: 10,
+        },
+        {
+          id: 4,
+          type: "연극",
+          genre: "로맨스",
+          title: "한여름 밤의 꿈",
+          venue: "대학로 극장",
+          time: "18:00",
+          cast: "김유정, 박보검",
+          recDate: 15,
+        },
+        {
+          id: 5,
+          type: "영화",
+          genre: "로맨스",
+          title: "비포 선라이즈 2026",
+          venue: "롯데시네마",
+          time: "16:00",
+          cast: "에단 호크",
+          recDate: 20,
+        },
+        {
+          id: 6,
+          type: "뮤지컬",
+          genre: "공포/스릴러",
+          title: "스위니 토드",
+          venue: "샤롯데씨어터",
+          time: "19:30",
+          cast: "조승우, 전미도",
+          recDate: 5,
+        },
+      ];
+
+      // User Saved Schedules
+      const userSchedules = {
+        "2026-6-10": [{ id: 3, title: "파묘 2 예매", type: "영화" }],
+        "2026-6-18": [{ id: 2, title: "보이즈 인 더 밴드", type: "연극" }],
+        "2026-6-25": [{ id: 1, title: "위키드 관람", type: "뮤지컬" }],
+      };
+
+      function renderCalendar() {
+        const grid = document.getElementById("calendarGrid");
+        grid.innerHTML = "";
+
+        const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+        daysOfWeek.forEach((day) => {
+          const header = document.createElement("div");
+          header.className = "day-header";
+          header.innerText = day;
+          grid.appendChild(header);
+        });
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        // Padding empty days
+        for (let i = 0; i < firstDay; i++) {
+          const cell = document.createElement("div");
+          cell.className = "day-cell other-month";
+          cell.innerText = new Date(
+            currentYear,
+            currentMonth,
+            -firstDay + i + 1,
+          ).getDate();
+          grid.appendChild(cell);
+        }
+
+        // Current month dates
+        for (let date = 1; date <= lastDate; date++) {
+          const cell = document.createElement("div");
+          cell.className = "day-cell";
+          if (date === 22 && currentMonth === 6) cell.classList.add("today");
+
+          const numSpan = document.createElement("span");
+          numSpan.className = "num";
+          numSpan.innerText = date;
+          cell.appendChild(numSpan);
+
+          const key = `${currentYear}-${currentMonth}-${date}`;
+
+          if (currentTab === "my") {
+            // 내 캘린더 모드
+            if (userSchedules[key] && isDukActive) {
+              userSchedules[key].forEach((ev) => {
+                if (
+                  selectedMainCategory === "ALL" ||
+                  ev.type === selectedMainCategory
+                ) {
+                  const tag = document.createElement("span");
+                  const catClass =
+                    ev.type === "영화"
+                      ? "movie"
+                      : ev.type === "연극"
+                        ? "play"
+                        : "musical";
+                  tag.className = `event-tag ${catClass}`;
+                  tag.innerText = ev.title;
+                  cell.appendChild(tag);
+                }
+              });
+            }
+          } else {
+            // 추천 일정 탭: 1차 카테고리 & 2차 장르 필터 동시 적용
+            const recItem = masterShows.find(
+              (s) =>
+                s.recDate === date &&
+                (selectedMainCategory === "ALL" ||
+                  s.type === selectedMainCategory) &&
+                (selectedSubGenre === "ALL" || s.genre === selectedSubGenre),
+            );
+
+            if (recItem && isDukActive) {
+              const tag = document.createElement("span");
+              const catClass =
+                recItem.type === "영화"
+                  ? "movie"
+                  : recItem.type === "연극"
+                    ? "play"
+                    : "musical";
+              tag.className = `event-tag ${catClass}`;
+              tag.innerText = `추천: ${recItem.title}`;
+              cell.appendChild(tag);
+            }
+          }
+
+          cell.onclick = () => openDateModal(date);
+          grid.appendChild(cell);
+        }
+
+        // Pad remaining
+        const totalCells = firstDay + lastDate;
+        const remaining = 35 - totalCells;
+        for (
+          let i = 1;
+          i <= (remaining >= 0 ? remaining : remaining + 7);
+          i++
+        ) {
+          const cell = document.createElement("div");
+          cell.className = "day-cell other-month";
+          cell.innerText = i;
+          grid.appendChild(cell);
+        }
+
+        document.getElementById("monthDisplay").innerText =
+          `${currentYear}년 ${currentMonth + 1}월`;
+      }
+
+      function setMainCategory(cat) {
+        selectedMainCategory = cat;
+        document.querySelectorAll(".cat-btn").forEach((btn) => {
+          btn.classList.toggle(
+            "active",
+            btn.innerText.includes(cat) ||
+              (cat === "ALL" && btn.innerText === "전체"),
+          );
+        });
+        renderCalendar();
+      }
+
+      function setSubGenre(genre) {
+        selectedSubGenre = genre;
+        document.querySelectorAll(".sub-cat-chip").forEach((btn) => {
+          btn.classList.toggle(
+            "active",
+            btn.innerText.includes(genre) ||
+              (genre === "ALL" && btn.innerText === "전체 장르"),
+          );
+        });
+        renderCalendar();
+      }
+
+      function switchTab(tab) {
+        currentTab = tab;
+        document
+          .getElementById("tabMy")
+          .classList.toggle("active", tab === "my");
+        document
+          .getElementById("tabRec")
+          .classList.toggle("active", tab === "rec");
+
+        // Toggle Genre Bar in Recommendation Mode
+        const genreBar = document.getElementById("genreCategoryBar");
+        if (tab === "rec") {
+          genreBar.classList.add("active");
+        } else {
+          genreBar.classList.remove("active");
+        }
+
+        renderCalendar();
+      }
+
+      function openDateModal(date) {
+        selectedDate = date;
+        const titlePrefix =
+          currentTab === "my" ? "내 스케줄 관리" : "추천 일정 목록";
+        document.getElementById("modalDateTitle").innerText =
+          `${currentMonth + 1}월 ${date}일 ${titlePrefix}`;
+
+        renderModalList();
+        document.getElementById("dateModal").classList.add("active");
+      }
+
+      function renderModalList() {
+        const key = `${currentYear}-${currentMonth}-${selectedDate}`;
+        const listContainer = document.getElementById("modalShowList");
+        listContainer.innerHTML = "";
+
+        // Filter shows by selected categories
+        const filteredShows = masterShows.filter(
+          (s) =>
+            (selectedMainCategory === "ALL" ||
+              s.type === selectedMainCategory) &&
+            (currentTab === "my" ||
+              selectedSubGenre === "ALL" ||
+              s.genre === selectedSubGenre),
+        );
+
+        if (filteredShows.length === 0) {
+          listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-sub); font-size:12px;">선택한 카테고리에 해당하는 정보가 없습니다.</div>`;
+          return;
+        }
+
+        filteredShows.forEach((show) => {
+          const isAdded =
+            userSchedules[key] &&
+            userSchedules[key].some((e) => e.id === show.id);
+          const card = document.createElement("div");
+          card.className = "show-option-card";
+
+          const actionButtonHtml =
+            currentTab === "my"
+              ? `
+          <button class="add-cal-btn ${isAdded ? "added" : ""}" onclick="toggleSchedule(${show.id}, '${show.title}', '${show.type}')">
+            ${isAdded ? "등록됨 ✓" : "+ 캘린더 추가"}
+          </button>
+        `
+              : `<span style="font-size:11px; color:var(--primary-purple-dark); font-weight:700;">[추천작]</span>`;
+
+          card.innerHTML = `
+          <div class="show-option-info">
+            <h5>
+              <span class="media-badge">${show.type}</span>
+              ${show.title}
+            </h5>
+            <p>${show.venue} · ${show.time}</p>
+            <p style="color: var(--primary-purple-dark); font-weight: 600;">장르: ${show.genre} | 출연: ${show.cast}</p>
+          </div>
+          ${actionButtonHtml}
+        `;
+          listContainer.appendChild(card);
+        });
+      }
+
+      function toggleSchedule(showId, title, type) {
+        const key = `${currentYear}-${currentMonth}-${selectedDate}`;
+        if (!userSchedules[key]) userSchedules[key] = [];
+
+        const index = userSchedules[key].findIndex((e) => e.id === showId);
+        if (index > -1) {
+          userSchedules[key].splice(index, 1);
+        } else {
+          userSchedules[key].push({ id: showId, title: title, type: type });
+        }
+
+        renderCalendar();
+        renderModalList();
+      }
+
+      function closeModal() {
+        document.getElementById("dateModal").classList.remove("active");
+      }
+
+      function toggleDukMode() {
+        isDukActive = !isDukActive;
+        const btn = document.getElementById("dukBtn");
+        const text = document.getElementById("dukStatusText");
+
+        btn.style.opacity = isDukActive ? "1" : "0.5";
+        text.innerText = isDukActive ? "덕질중" : "일시정지";
+        renderCalendar();
+      }
+
+      function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        }
+        renderCalendar();
+      }
+
+      function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+        renderCalendar();
+      }
+
+      renderCalendar();
+    </script>
+  </body>
+</html>
